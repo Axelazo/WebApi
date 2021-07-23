@@ -6,28 +6,30 @@ using System.Threading.Tasks;
 using WebApi.Data;
 using WebApi.Models;
 using WebApi.Repository.IRepository;
+using System.Data;
 
 namespace WebApi.Repository
 {
-    public class DepartmentRepository : IDepartmentRepository
+    public class UserRepository : IUserRepository
     {
         private readonly IConnection _connection;
         private readonly string _stringConnection;
 
-        public DepartmentRepository(IConnection connection)
+        public UserRepository(IConnection connection)
         {
             this._connection = connection;
             this._stringConnection = connection.GetStringConnection();
         }
 
-        public bool insertDepartment(DepartmentModel position)
+        public bool insertUser(UserModel user)
         {
             using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
             {
-                SqlCommand command = new SqlCommand("insert_department", sqlConnection);
+                SqlCommand command = new SqlCommand("insert_user", sqlConnection);
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@department_name", position.name);
-                command.Parameters.AddWithValue("@department_description", position.description);
+                command.Parameters.AddWithValue("@user_username", user.username);
+                command.Parameters.AddWithValue("@user_email", user.email);
+                command.Parameters.AddWithValue("@user_password", user.password);
 
                 try
                 {
@@ -43,52 +45,13 @@ namespace WebApi.Repository
             }
         }
 
-        public DepartmentModel viewDepartment(int id)
+        public List<UserModel> listUsers()
         {
-            DepartmentModel department = new DepartmentModel();
+            List<UserModel> list = new List<UserModel>();
 
             using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
             {
-                SqlCommand command = new SqlCommand("view_department", sqlConnection);
-                command.CommandType = System.Data.CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@department_id", id);
-
-                try
-                {
-                    sqlConnection.Open();
-                    var reader = command.ExecuteReader();
-                    if (reader.HasRows)
-                    {
-                        while (reader.Read())
-                        {
-                            department = new DepartmentModel
-                            {
-                                id = reader.GetInt32(0),
-                                name = reader.GetString(1),
-                                description = reader.GetString(2)
-                            };
-
-                            return department;
-                        }
-                    }
-                }
-                catch (Exception)
-                {
-                    throw;
-                }
-
-            }
-
-            return null;
-        }
-
-        public List<DepartmentModel> listDepartments()
-        {
-            List<DepartmentModel> list = new List<DepartmentModel>();
-
-            using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
-            {
-                SqlCommand command = new SqlCommand("list_departments", sqlConnection);
+                SqlCommand command = new SqlCommand("list_users", sqlConnection);
                 command.CommandType = System.Data.CommandType.StoredProcedure;
 
                 try
@@ -99,11 +62,11 @@ namespace WebApi.Repository
                     {
                         while (reader.Read())
                         {
-                            DepartmentModel data = new DepartmentModel
+                            UserModel data = new UserModel
                             {
                                 id = reader.GetInt32(0),
-                                name = reader.GetString(1),
-                                description = reader.GetString(2)
+                                username = reader.GetString(1),
+                                email = reader.GetString(2)
                             };
 
                             list.Add(data);
@@ -119,26 +82,65 @@ namespace WebApi.Repository
             return list;
         }
 
-        public DepartmentModel modifyDepartment(DepartmentModel department)
+        public UserModel viewUser(int id)
         {
+            UserModel user = new UserModel();
+
             using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
             {
-                SqlCommand command = new SqlCommand("modify_department", sqlConnection);
+                SqlCommand command = new SqlCommand("view_user", sqlConnection);
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@department_id", department.id);
-                command.Parameters.AddWithValue("@department_name", department.name);
-                command.Parameters.AddWithValue("@department_description", department.description);
+                command.Parameters.AddWithValue("@user_id", id);
 
                 try
                 {
                     sqlConnection.Open();
-                    if (command.ExecuteNonQuery() > 0) {
-                        return department;
-                    } else
+                    var reader = command.ExecuteReader();
+                    if (reader.HasRows)
                     {
-                        return null;
+                        while (reader.Read())
+                        {
+                            user = new UserModel
+                            {
+                                username = reader.GetString(0),
+                                email = reader.GetString(1),
+                            };
+
+                            return user;
+                        }
                     }
-                    return null;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+
+            }
+            return null;
+        }
+
+        public bool modifyUser(UserModel user)
+        {
+            using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
+            {
+                SqlCommand command = new SqlCommand("modify_user", sqlConnection);
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@user_id", user.id);
+                command.Parameters.AddWithValue("@user_username", user.username);
+                command.Parameters.AddWithValue("@user_email", user.email);
+                command.Parameters.AddWithValue("@user_password", user.password);
+
+                try
+                {
+                    sqlConnection.Open();
+                    if (command.ExecuteNonQuery() > 0)
+                    {
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
                 }
                 catch (Exception)
                 {
@@ -148,13 +150,13 @@ namespace WebApi.Repository
             }
         }
 
-        public bool deleteDepartment(int id)
+        public bool deleteUser(int id)
         {
             using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
             {
-                SqlCommand command = new SqlCommand("delete_department", sqlConnection);
+                SqlCommand command = new SqlCommand("delete_user", sqlConnection);
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@department_id", id);
+                command.Parameters.AddWithValue("@user_id", id);
 
                 try
                 {
@@ -168,15 +170,44 @@ namespace WebApi.Repository
                 }
                 catch (Exception)
                 {
+
                     throw;
                 }
 
             }
         }
 
+        public int loginUser(string username, string password)
+        {
+            using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
+            {
+                SqlCommand command = new SqlCommand("login_user", sqlConnection);
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@user_username", username);
+                command.Parameters.AddWithValue("@user_password", password);
+
+                SqlParameter output = new SqlParameter();
+                output.ParameterName = "@response_message";
+                output.SqlDbType = SqlDbType.Int;
+                output.Direction = ParameterDirection.Output;
+                command.Parameters.Add(output);
 
 
+                
 
+                try
+                {
+                    sqlConnection.Open();
+                    command.ExecuteNonQuery();
+                    int r = (int)output.Value;
+                    return r;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
 
+            }
+        }
     }
 }

@@ -2,19 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WebApi.Models;
 
 namespace WebApi.Repository.IRepository
 {
-    interface IUserRepository
+    public interface IUserRepository
     {
-        bool inserUser(PositionModel position);
+        bool insertUser(UserModel user);
 
-        List<PositionModel> listPositions();
+        List<UserModel> listUsers();
 
-        PositionModel viewPosition(int id);
+        UserModel viewUser(int id);
 
-        PositionModel modifyPosition(PositionModel position);
+        bool modifyUser(UserModel user);
 
-        bool deletePosition(int id);
+        bool deleteUser(int id);
+
+        int loginUser(string username, string password);
     }
 }

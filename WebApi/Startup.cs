@@ -31,6 +31,8 @@ namespace WebApi
             services.AddSingleton<IConnection, Connection>();
             services.AddSingleton<IPositionRepository, PositionRepository>();
             services.AddSingleton<IDepartmentRepository, DepartmentRepository>();
+            services.AddSingleton<IUserRepository, UserRepository>();
+            services.AddSingleton<IClockingRepository, ClockingRepository>();
             services.AddSingleton<IConfiguration>(Configuration);
         }
 
