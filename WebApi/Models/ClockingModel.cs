@@ -11,5 +11,6 @@ namespace WebApi.Models
         public int employee_id{ get; set; }
         public DateTime clock_in { get; set; }
         public DateTime clock_out{ get; set; }
+        public DateTime created_at { get; set; }
     }
 }

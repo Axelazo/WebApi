@@ -6,19 +6,19 @@ using WebApi.Models;
 
 namespace WebApi.Repository.IRepository
 {
-    interface IClockingRepository
+    public interface IClockingRepository
     {
 
-        bool createClocking(ClockingModel clocking);
+        bool CreateClocking(ClockingModel clocking);
 
-        bool insertClocking(DateTime dateTime, int input);
+        bool InsertClocking(DateTime dateTime, int input);
 
-        ClockingModel viewClocking(int id);
+        ClockingModel ViewClocking(int id);
 
-        List<ClockingModel> listEmployeeClockings(int employee_id);
+        List<ClockingModel> ListEmployeeClockings(int employee_id);
 
-        bool deleteClocking(int id);
+        bool DeleteClocking(int id);
 
-
+        public bool ModifyClocking(int id);
     }
 }
