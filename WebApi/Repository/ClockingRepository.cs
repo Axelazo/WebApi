@@ -20,14 +20,15 @@ namespace WebApi.Repository
             this._stringConnection = connection.GetStringConnection();
         }
 
-        public bool CreateClocking(ClockingModel clocking)
+        public bool CreateClocking(int employeeId)
         {
             using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
             {
+                DateTime createdAt = DateTime.Now;
                 SqlCommand command = new SqlCommand("insert_clocking", sqlConnection);
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@clocking_employee_id", clocking.employee_id);
-                command.Parameters.AddWithValue("@clocking_created_at", clocking.created_at);
+                command.Parameters.AddWithValue("@clocking_employee_id", employeeId);
+                command.Parameters.AddWithValue("@clocking_created_at", createdAt);
 
                 try
                 {
@@ -45,12 +46,86 @@ namespace WebApi.Repository
 
         public bool DeleteClocking(int id)
         {
-            throw new NotImplementedException();
+            using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
+            {
+                SqlCommand command = new SqlCommand("delete_clocking", sqlConnection);
+                command.CommandType = System.Data.CommandType.StoredProcedure;
+                command.Parameters.AddWithValue("@department_id", id);
+
+                try
+                {
+                    sqlConnection.Open();
+                    if (command.ExecuteNonQuery() > 0)
+                    {
+                        return true;
+                    }
+
+                    return false;
+                }
+                catch (Exception)
+                {
+                    throw;
+                }
+
+            }
         }
 
-        public bool InsertClocking(DateTime dateTime, int input)
+        public bool InsertClocking(InsertClockingModel insertClocking/*DateTime dateTime, int employeeId, int input*/)
         {
-            throw new NotImplementedException();
+            if(insertClocking.Input == 1)
+            {
+                using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
+                {
+                    SqlCommand command = new SqlCommand("insert_clocking_in", sqlConnection);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@clocking_employee_id", insertClocking.EmployeeId);
+                    command.Parameters.AddWithValue("@clocking_id", insertClocking.Id);
+                    command.Parameters.AddWithValue("@clocking_clock_in", insertClocking.ClockIn);
+
+                    try
+                    {
+                        sqlConnection.Open();
+                        if (command.ExecuteNonQuery() > 0)
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+
+                }
+            }
+            else
+            {
+                using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
+                {
+                    SqlCommand command = new SqlCommand("insert_clocking_out", sqlConnection);
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@clocking_employee_id", insertClocking.EmployeeId);
+                    command.Parameters.AddWithValue("@clocking_id", insertClocking.Id);
+                    command.Parameters.AddWithValue("@clockin_clock_out", insertClocking.ClockOut);
+
+                    try
+                    {
+                        sqlConnection.Open();
+                        if (command.ExecuteNonQuery() > 0)
+                        {
+                            return true;
+                        }
+
+                        return false;
+                    }
+                    catch (Exception)
+                    {
+                        throw;
+                    }
+
+                }
+            }
         }
 
         public List<ClockingModel> ListEmployeeClockings(int employee_id)
@@ -72,11 +147,11 @@ namespace WebApi.Repository
                         {
                             ClockingModel data = new ClockingModel
                             {
-                                id = reader.GetInt32(0),
-                                employee_id = reader.GetInt32(1),
-                                clock_in = reader.GetDateTime(2),
-                                clock_out = reader.GetDateTime(3),
-                                created_at = reader.GetDateTime(4)
+                                Id = reader.GetInt32(0),
+                                EmployeeId = reader.GetInt32(1),
+                                ClockIn = reader.GetDateTime(2),
+                                ClockOut = reader.GetDateTime(3),
+                                CreatedAt = reader.GetDateTime(4)
                             };
 
                             list.Add(data);

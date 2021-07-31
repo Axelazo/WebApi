@@ -9,9 +9,9 @@ namespace WebApi.Repository.IRepository
     public interface IClockingRepository
     {
 
-        bool CreateClocking(ClockingModel clocking);
+        bool CreateClocking(int employeeId);
 
-        bool InsertClocking(DateTime dateTime, int input);
+        bool InsertClocking(InsertClockingModel insertClocking);
 
         ClockingModel ViewClocking(int id);
 

@@ -8,16 +8,16 @@ namespace WebApi.Repository.IRepository
 {
     public interface IUserRepository
     {
-        bool insertUser(UserModel user);
+        bool InsertUser(UserModel user);
 
-        List<UserModel> listUsers();
+        List<UserModel> ListUsers();
 
-        UserModel viewUser(int id);
+        UserModel ViewUser(int id);
 
-        bool modifyUser(UserModel user);
+        bool ModifyUser(UserModel user);
 
-        bool deleteUser(int id);
+        bool DeleteUser(int id);
 
-        int loginUser(string username, string password);
+        int LoginUser(string username, string password);
     }
 }

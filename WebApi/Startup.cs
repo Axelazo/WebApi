@@ -33,6 +33,7 @@ namespace WebApi
             services.AddSingleton<IDepartmentRepository, DepartmentRepository>();
             services.AddSingleton<IUserRepository, UserRepository>();
             services.AddSingleton<IClockingRepository, ClockingRepository>();
+            services.AddSingleton<IEmployeeRepository, EmployeeRepository>();
             services.AddSingleton<IConfiguration>(Configuration);
         }
 

@@ -26,7 +26,7 @@ namespace WebApi.Controllers
         {
             Response response = new Response();
 
-            var lista = _userRepository.listUsers();
+            var lista = _userRepository.ListUsers();
             if (lista.Count > 0)
             {
                 response.status = "Success";
@@ -44,7 +44,7 @@ namespace WebApi.Controllers
         {
             Response response = new Response();
 
-            var data = _userRepository.viewUser(id);
+            var data = _userRepository.ViewUser(id);
             if (data != null)
             {
                 response.status = "Success";
@@ -62,7 +62,7 @@ namespace WebApi.Controllers
         {
             Response response = new Response();
 
-            var data = _userRepository.insertUser(user);
+            var data = _userRepository.InsertUser(user);
             if (data)
             {
                 response.status = "Success";
@@ -71,7 +71,7 @@ namespace WebApi.Controllers
                 return Ok(response);
             }
 
-            return NotFound();
+            return BadRequest();
         }
 
         [HttpPut]
@@ -79,7 +79,7 @@ namespace WebApi.Controllers
         {
             Response response = new Response();
 
-            var data = _userRepository.modifyUser(user);
+            var data = _userRepository.ModifyUser(user);
             if (data)
             {
                 response.status = "Success";
@@ -97,7 +97,7 @@ namespace WebApi.Controllers
         {
             Response response = new Response();
 
-            var data = _userRepository.deleteUser(id);
+            var data = _userRepository.DeleteUser(id);
             if (data)
             {
                 response.status = "Success";
@@ -109,12 +109,12 @@ namespace WebApi.Controllers
             return BadRequest();
         }
 
-        [HttpPost("/login")]
-        public IActionResult Login(string username, string password)
+        [HttpPost("login")]
+        public IActionResult Login(UserModel user)
         {
             Response response = new Response();
 
-            var data = _userRepository.loginUser(username, password);
+            var data = _userRepository.LoginUser(user.Username, user.Password);
             if (data == 0)
             {
                 response.status = "Fallo!";

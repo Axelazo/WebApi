@@ -21,15 +21,15 @@ namespace WebApi.Repository
             this._stringConnection = connection.GetStringConnection();
         }
 
-        public bool insertUser(UserModel user)
+        public bool InsertUser(UserModel user)
         {
             using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
             {
                 SqlCommand command = new SqlCommand("insert_user", sqlConnection);
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@user_username", user.username);
-                command.Parameters.AddWithValue("@user_email", user.email);
-                command.Parameters.AddWithValue("@user_password", user.password);
+                command.Parameters.AddWithValue("@user_username", user.Username);
+                command.Parameters.AddWithValue("@user_email", user.Email);
+                command.Parameters.AddWithValue("@user_password", user.Password);
 
                 try
                 {
@@ -45,7 +45,7 @@ namespace WebApi.Repository
             }
         }
 
-        public List<UserModel> listUsers()
+        public List<UserModel> ListUsers()
         {
             List<UserModel> list = new List<UserModel>();
 
@@ -64,9 +64,9 @@ namespace WebApi.Repository
                         {
                             UserModel data = new UserModel
                             {
-                                id = reader.GetInt32(0),
-                                username = reader.GetString(1),
-                                email = reader.GetString(2)
+                                Id = reader.GetInt32(0),
+                                Username = reader.GetString(1),
+                                Email = reader.GetString(2)
                             };
 
                             list.Add(data);
@@ -82,7 +82,7 @@ namespace WebApi.Repository
             return list;
         }
 
-        public UserModel viewUser(int id)
+        public UserModel ViewUser(int id)
         {
             UserModel user = new UserModel();
 
@@ -102,8 +102,8 @@ namespace WebApi.Repository
                         {
                             user = new UserModel
                             {
-                                username = reader.GetString(0),
-                                email = reader.GetString(1),
+                                Username = reader.GetString(0),
+                                Email = reader.GetString(1),
                             };
 
                             return user;
@@ -119,16 +119,16 @@ namespace WebApi.Repository
             return null;
         }
 
-        public bool modifyUser(UserModel user)
+        public bool ModifyUser(UserModel user)
         {
             using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
             {
                 SqlCommand command = new SqlCommand("modify_user", sqlConnection);
                 command.CommandType = System.Data.CommandType.StoredProcedure;
-                command.Parameters.AddWithValue("@user_id", user.id);
-                command.Parameters.AddWithValue("@user_username", user.username);
-                command.Parameters.AddWithValue("@user_email", user.email);
-                command.Parameters.AddWithValue("@user_password", user.password);
+                command.Parameters.AddWithValue("@user_id", user.Id);
+                command.Parameters.AddWithValue("@user_username", user.Username);
+                command.Parameters.AddWithValue("@user_email", user.Email);
+                command.Parameters.AddWithValue("@user_password", user.Password);
 
                 try
                 {
@@ -150,12 +150,12 @@ namespace WebApi.Repository
             }
         }
 
-        public bool deleteUser(int id)
+        public bool DeleteUser(int id)
         {
             using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
             {
                 SqlCommand command = new SqlCommand("delete_user", sqlConnection);
-                command.CommandType = System.Data.CommandType.StoredProcedure;
+                command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@user_id", id);
 
                 try
@@ -177,12 +177,12 @@ namespace WebApi.Repository
             }
         }
 
-        public int loginUser(string username, string password)
+        public int LoginUser(string username, string password)
         {
             using (var sqlConnection = _connection.GetSqlConnection(_stringConnection))
             {
                 SqlCommand command = new SqlCommand("login_user", sqlConnection);
-                command.CommandType = System.Data.CommandType.StoredProcedure;
+                command.CommandType = CommandType.StoredProcedure;
                 command.Parameters.AddWithValue("@user_username", username);
                 command.Parameters.AddWithValue("@user_password", password);
 

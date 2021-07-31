@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,22 +11,22 @@ namespace WebApi.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ClockingController : Controller
+    public class EmployeeController : ControllerBase
     {
-        private readonly IClockingRepository _clockingRepository;
+        private readonly IEmployeeRepository _employeeRepository;
 
-        public ClockingController(IClockingRepository clockingRepository)
+        public EmployeeController(IEmployeeRepository employeeRepository)
         {
-            this._clockingRepository = clockingRepository;
+            this._employeeRepository = employeeRepository;
         }
 
-        [Route("list/{employee_id}")]
+        // GET: api/<ValuesController>
         [HttpGet]
-        public IActionResult Get(int employeeId)
+        public IActionResult Get()
         {
             Response response = new Response();
 
-            var lista = _clockingRepository.ListEmployeeClockings(employeeId);
+            var lista = _employeeRepository.ListEmployees();
             if (lista.Count > 0)
             {
                 response.status = "Success";
@@ -35,16 +34,17 @@ namespace WebApi.Controllers
                 response.data = lista;
                 return Ok(response);
             }
+
             return NotFound();
         }
 
-        // GET 
-        [HttpGet("{employee_id}/{id}")]
-        public IActionResult Get(int employeeId, int id)
+        // GET api/<ValuesController>/5
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
         {
             Response response = new Response();
 
-            var data = _clockingRepository.ViewClocking(id);
+            var data = _employeeRepository.ViewEmployee(id);
             if (data != null)
             {
                 response.status = "Success";
@@ -58,12 +58,11 @@ namespace WebApi.Controllers
 
         // POST api/<ValuesController>
         [HttpPost]
-        public IActionResult Post(ClockingModel clockingModel)
+        public IActionResult Post(EmployeeModel employee)
         {
             Response response = new Response();
 
-
-            var data = _clockingRepository.CreateClocking(clockingModel.EmployeeId);
+            var data = _employeeRepository.InsertEmployee(employee);
             if (data)
             {
                 response.status = "Success";
@@ -72,16 +71,16 @@ namespace WebApi.Controllers
                 return Ok(response);
             }
 
-            return  BadRequest();
+            return BadRequest();
         }
 
 
         [HttpPut]
-        public IActionResult Modify(InsertClockingModel insertClocking)
+        public IActionResult Modify(EmployeeModel employee)
         {
             Response response = new Response();
 
-            var data = _clockingRepository.InsertClocking(insertClocking);
+            var data = _employeeRepository.ModifyEmployee(employee);
             if (data)
             {
                 response.status = "Success";
@@ -93,14 +92,13 @@ namespace WebApi.Controllers
             return BadRequest();
         }
 
-
         // DELETE api/<ValuesController>/5
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             Response response = new Response();
 
-            var data = _clockingRepository.DeleteClocking(id);
+            var data = _employeeRepository.DeleteEmployee(id);
             if (data)
             {
                 response.status = "Success";
@@ -109,7 +107,8 @@ namespace WebApi.Controllers
                 return Ok(response);
             }
 
-            return NotFound();
+            return BadRequest();
         }
+
     }
 }

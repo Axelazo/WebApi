@@ -7,10 +7,10 @@ namespace WebApi.Models
 {
     public class ClockingModel
     {
-        public int id { get; set; }
-        public int employee_id{ get; set; }
-        public DateTime clock_in { get; set; }
-        public DateTime clock_out{ get; set; }
-        public DateTime created_at { get; set; }
+        public int Id { get; set; }
+        public int EmployeeId{ get; set; }
+        public DateTime ClockIn { get; set; }
+        public DateTime ClockOut{ get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }
